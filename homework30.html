@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>homework30</title>
+    <style>
+        
+        .feed{
+            width: 600px;
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+        }
+        .feedItem{
+            width: 400px;
+            height: 150px;
+            border-radius: 5px;
+            box-shadow:#999 2px 2px 1px ;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 5px;
+        }
+    </style>
+   
+  </head>
+  <body>
+    <script>
+              const user =[]
+        window.onload = function () {
+            fetch('https://jsonplaceholder.typicode.com/users').then((res)=>{
+                return res.json()
+            })
+            .then((_user)=>{
+              user.push (..._user);
+              loadFeed()
+            })
+          
+          }
+        function loadFeed() {
+            fetch('https://jsonplaceholder.typicode.com/posts')
+            .then((res)=>{
+            return res.json()
+            })
+            .then((posts)=>{
+                const frag = new DocumentFragment();
+                const elements = []
+           posts.forEach((post)=>{
+                const users = user.find((u)=>{
+                    return u.id===post.userid;
+                })
+                if(users){
+                     post.userName = users.name;
+                }
+              
+                elements.push(greatFeed(post)) ;
+            })
+           
+            
+            console.log(elements)
+            const container = document.getElementById('feedContainer')
+            elements.forEach(element => {
+              container.appendChild(element);
+            });
+            })
+        }
+        function greatFeed (post){
+            const ineerHtml = `
+            <span class="usersName">${post.usersName}</span>
+            <span class="titele">${post.titele}</span>
+            <span class="body">${post.body}</span>
+            `
+        const div = document.createElement("div")
+        div.setAttribute("postid",post.id)
+        div.classList.add("feedItem")
+        div.innerHTML = ineerHtml;
+        return div
+        }
+    </script>
+        <div  class="feed"id="feedContainer">
+            <div class="feedItem">
+                <span class="usersName">usersName</span>
+                <span class="titele">titele</span>
+                <span class="body">body</span>
+              </div>
+            </div>
+    
+  </body>
+</html>
